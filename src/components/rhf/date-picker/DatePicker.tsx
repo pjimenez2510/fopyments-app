@@ -13,12 +13,12 @@ import { useState } from "react";
 import { FieldErrors, FieldValues } from "react-hook-form";
 
 interface DatePickerProps {
-  name: string;
-  label: string;
-  value: Date | undefined;
+  name?: string;
+  value?: Date;
   minDate?: Date;
   onChange: (date: Date | undefined) => void;
-  errors: FieldErrors<FieldValues>;
+  errors?: FieldErrors<FieldValues>;
+  className?: string;
 }
 
 const DatePicker = ({
@@ -27,6 +27,7 @@ const DatePicker = ({
   onChange,
   errors,
   value,
+  className,
 }: DatePickerProps) => {
   const [date, setDate] = useState<Date | undefined>(value);
   const handleDateChange = (selectedDate: Date | undefined) => {
@@ -34,8 +35,9 @@ const DatePicker = ({
     onChange(selectedDate ? selectedDate : undefined);
   };
 
-  const getErrorMessage = (name: string): string | undefined => {
-    const error = errors[name];
+  const getErrorMessage = (name?: string): string | undefined => {
+    if (!name) return undefined;
+    const error = errors?.[name];
     return error && typeof error.message === "string"
       ? error.message
       : undefined;
@@ -49,7 +51,8 @@ const DatePicker = ({
             variant={"outline"}
             className={cn(
               "mt-1 w-full justify-start text-left font-normal",
-              !date && "text-muted-foreground"
+              !date && "text-muted-foreground",
+              className
             )}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />

@@ -31,7 +31,6 @@ const RHFDatePicker: React.FC<RHFDatePickerProps> = ({
           return (
             <DatePicker
               name={name}
-              label={label}
               minDate={minDate}
               onChange={field.onChange}
               errors={errors}

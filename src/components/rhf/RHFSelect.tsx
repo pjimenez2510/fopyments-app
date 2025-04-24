@@ -47,7 +47,7 @@ const RHFSelect: React.FC<RHFSelectProps> = ({
         render={({ field }) => (
           <>
             <Select
-              value={field.value}
+              value={String(field.value) || ""}
               onValueChange={(value) => {
                 field.onChange(value === "all" ? "" : value);
               }}
