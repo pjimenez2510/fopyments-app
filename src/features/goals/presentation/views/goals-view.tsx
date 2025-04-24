@@ -13,21 +13,11 @@ export default function GoalsView() {
   const router = useRouter();
   const { data: session } = useSession();
   const userId = session?.user?.id;
-
   const { data: goals = [], isLoading } = useFindGoalUsersById(userId!);
+
   const handleCreateGoal = () => {
     router.push("/management/goals/create");
   };
-
-  if (isLoading) {
-    return (
-      <ContentLayout title="Metas">
-        <div className="flex justify-center items-center min-h-[400px]">
-          <LoadingSpinner />
-        </div>
-      </ContentLayout>
-    );
-  }
 
   return (
     <ContentLayout title="Metas">
@@ -43,8 +33,12 @@ export default function GoalsView() {
           </Button>
         </div>
 
-        {goals.length === 0 ? (
-          <div className="bg-gray-50 rounded-lg p-8 text-center shadow-sm">
+        {isLoading ? (
+          <div className="flex justify-center items-center">
+            <LoadingSpinner />
+          </div>
+        ) : goals.length === 0 ? (
+          <div className="bg-primary/5 rounded-lg p-8 text-center shadow-sm">
             <p className="text-gray-500">No tienes metas creadas todavía</p>
             <Button onClick={handleCreateGoal} variant="link" className="mt-2">
               Crea tu primera meta

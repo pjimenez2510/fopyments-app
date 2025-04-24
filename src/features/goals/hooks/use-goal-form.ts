@@ -5,7 +5,6 @@ import { Goal } from "../interfaces/ goals.interface";
 import { useCreateGoal, useUpdateGoal } from "./use-goals-queries";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { formatDate } from "@/lib/format-date";
 
 const goalSchema = z
   .object({
@@ -20,6 +19,10 @@ const goalSchema = z
     end_date: z.coerce
       .date()
       .min(new Date(), "La fecha de fin debe ser mayor que la fecha actual"),
+    contribution_frequency: z.coerce
+      .number()
+      .min(1, "La frecuencia de contribución debe ser mayor que 0"),
+    category_id: z.coerce.number().min(1, "La categoría es requerida"),
   })
   .refine((data) => data.target_amount > data.current_amount, {
     path: ["target_amount"],
@@ -52,7 +55,7 @@ export const useGoalForm = ({ goal }: UseGoalFormProps) => {
   const onSubmit: SubmitHandler<GoalForm> = async (data) => {
     const goalData = {
       ...data,
-      end_date: formatDate(data.end_date, "yyyy-MM-dd"),
+      end_date: data.end_date.toISOString(),
     };
 
     if (goal) {
