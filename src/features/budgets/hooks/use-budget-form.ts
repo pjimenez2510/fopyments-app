@@ -11,17 +11,24 @@ import { useRouter } from "next/navigation";
 const budgetSchema = z
   .object({
     shared_user_id: z.coerce.number().optional(),
-    category_id: z.coerce.number().min(1, "Debe seleccionar una categoría"),
+    category_id: z.coerce
+      .number({
+        invalid_type_error: "La categoría debe ser un número",
+      })
+      .min(1, "Debe seleccionar una categoría"),
     current_amount: z.coerce
-      .number()
+      .number({
+        invalid_type_error: "La cantidad actual debe ser un número",
+      })
       .min(0, "La cantidad actual debe ser mayor o igual a 0"),
     limit_amount: z.coerce
-      .number()
-      .min(0, "El límite debe ser mayor que 0")
-      .refine((val) => val > 0, {
-        message: "El límite debe ser mayor que 0",
-      }),
-    month: z.coerce.date(),
+      .number({
+        invalid_type_error: "El límite debe ser un número",
+      })
+      .min(0, "El límite debe ser mayor que 0"),
+    month: z.coerce.date({
+      invalid_type_error: "La fecha debe ser una fecha válida",
+    }),
   })
   .refine(
     (data) => {
@@ -49,7 +56,7 @@ export const useBudgetForm = ({ budget }: UseBudgetFormProps) => {
 
   const defaultValues: Partial<BudgetForm> = {
     shared_user_id: budget?.shared_user_id || undefined,
-    category_id: budget?.category.id || undefined,
+    category_id: budget?.category?.id || undefined,
     current_amount: budget?.current_amount || 0,
     limit_amount: budget?.limit_amount || undefined,
     month: budget?.month ? new Date(budget.month) : new Date(),

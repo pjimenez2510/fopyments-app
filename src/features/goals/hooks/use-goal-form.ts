@@ -11,18 +11,26 @@ const goalSchema = z
     shared_user_id: z.coerce.number().optional(),
     name: z.string().min(1, "El nombre es requerido"),
     current_amount: z.coerce
-      .number()
+      .number({
+        invalid_type_error: "La cantidad actual debe ser un número",
+      })
       .min(0, "La cantidad actual debe ser mayor que 0"),
     target_amount: z.coerce
-      .number()
+      .number({
+        invalid_type_error: "La cantidad objetivo debe ser un número",
+      })
       .min(0, "La cantidad objetivo debe ser mayor que 0"),
     end_date: z.coerce
-      .date()
+      .date({
+        invalid_type_error: "La fecha de fin debe ser una fecha válida",
+      })
       .min(new Date(), "La fecha de fin debe ser mayor que la fecha actual"),
-    contribution_frequency: z.coerce
-      .number()
-      .min(1, "La frecuencia de contribución debe ser mayor que 0"),
-    category_id: z.coerce.number().min(1, "La categoría es requerida"),
+    contribution_frequency: z.coerce.number({
+      invalid_type_error: "La frecuencia de contribución debe ser un número",
+    }),
+    category_id: z.coerce.number({
+      invalid_type_error: "La categoría debe ser un número",
+    }),
   })
   .refine((data) => data.target_amount > data.current_amount, {
     path: ["target_amount"],
@@ -49,6 +57,8 @@ export const useGoalForm = ({ goal }: UseGoalFormProps) => {
       current_amount: goal?.current_amount || 0,
       target_amount: goal?.target_amount || 0,
       end_date: goal?.end_date || new Date(),
+      category_id: goal?.category?.id || undefined,
+      contribution_frequency: goal?.contribution_frequency || 1,
     },
   });
 
