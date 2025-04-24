@@ -20,9 +20,6 @@ import {
 } from "@/components/ui/tooltip";
 import { useSession } from "next-auth/react";
 import { useLogout } from "@/features/auth/hooks/use-logout";
-import { userRoleSpanish } from "@/features/users/constants/user-role-spanish";
-import { UserRole } from "@/features/users/interfaces/user.interface";
-import { Badge } from "@/components/ui/badge";
 
 export function UserNav() {
   const { data } = useSession();
@@ -30,7 +27,7 @@ export function UserNav() {
 
   if (!data?.user) return null;
 
-  const { firstName, lastName, email, role } = data.user;
+  const { name, email } = data.user;
 
   return (
     <DropdownMenu>
@@ -45,8 +42,7 @@ export function UserNav() {
                 <Avatar className="h-8 w-8">
                   <AvatarImage src="#" alt="Avatar" />
                   <AvatarFallback className="bg-transparent">
-                    {firstName[0]}
-                    {lastName[0]}
+                    {name[0]}
                   </AvatarFallback>
                 </Avatar>
               </Button>
@@ -60,11 +56,7 @@ export function UserNav() {
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <div className="flex items-center justify-between space-x-2">
-              <p className="text-sm font-medium leading-none">
-                {firstName} {lastName}
-              </p>
-
-              <Badge>{userRoleSpanish[role as UserRole]}</Badge>
+              <p className="text-sm font-medium leading-none">{name}</p>
             </div>
             <p className="text-xs leading-none text-muted-foreground">
               {email}

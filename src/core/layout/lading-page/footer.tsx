@@ -11,18 +11,18 @@ const Footer = () => {
           <div className="col-span-full xl:col-span-2">
             <Link href="/" className="flex items-center font-bold gap-4">
               <Image
-                src="/images/logo.avif"
-                alt="RentCar logo"
+                src="/images/logo.png"
+                alt="Fopyments logo"
                 className="rounded-full"
                 width={170}
                 priority
                 height={170}
               />
               <div>
-                <h3 className="text-2xl">RentCar</h3>
+                <h3 className="text-2xl">Fopyments</h3>
                 <p>
-                  Gestiona tus rentas de automóvil con RentCar de forma rápida y
-                  segura.
+                  Gestiona tus rentas de automóvil con Fopyments de forma rápida
+                  y segura.
                 </p>
               </div>
             </Link>
@@ -32,7 +32,7 @@ const Footer = () => {
             <h3 className="font-bold text-lg">Contacto</h3>
             <div>
               <Link
-                href="mailto:contact@RentCar.com"
+                href="mailto:contact@Fopyments.com"
                 className="opacity-60 hover:opacity-100"
               >
                 Email
@@ -99,7 +99,7 @@ const Footer = () => {
             <h3 className="font-bold text-lg">Redes Sociales</h3>
             <div>
               <Link
-                href="https://facebook.com/RentCar"
+                href="https://facebook.com/Fopyments"
                 target="_blank"
                 className="opacity-60 hover:opacity-100"
               >
@@ -108,7 +108,7 @@ const Footer = () => {
             </div>
             <div>
               <Link
-                href="https://twitter.com/RentCar"
+                href="https://twitter.com/Fopyments"
                 target="_blank"
                 className="opacity-60 hover:opacity-100"
               >
@@ -117,7 +117,7 @@ const Footer = () => {
             </div>
             <div>
               <Link
-                href="https://instagram.com/RentCar"
+                href="https://instagram.com/Fopyments"
                 target="_blank"
                 className="opacity-60 hover:opacity-100"
               >
@@ -129,7 +129,7 @@ const Footer = () => {
 
         <section className="text-center mt-6">
           <h3 className="text-sm">
-            &copy; 2024 RentCar. Diseñado y desarrollado por RentCar S.A
+            &copy; 2024 Fopyments. Diseñado y desarrollado por Fopyments S.A
           </h3>
         </section>
       </div>

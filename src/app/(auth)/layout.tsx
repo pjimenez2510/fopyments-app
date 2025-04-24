@@ -16,11 +16,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <Link href="/" className="flex flex-col items-center justify-between">
             <Image
               priority
-              src="/images/logo.avif"
-              alt="RentCar logo"
+              src="/images/logo.png"
+              alt="Fopyments logo"
               width={170}
               height={170}
-              className="rounded-full"
             />
             <CardTitle className="text-2xl">FinancyApp</CardTitle>
             <CardDescription>

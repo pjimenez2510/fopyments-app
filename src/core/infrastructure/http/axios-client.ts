@@ -1,7 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 import { getSession } from "next-auth/react";
-import snakecaseKeys from "snakecase-keys";
-import camelcaseKeys from "camelcase-keys";
 import { toast } from "sonner";
 import { getErrors } from "@/lib/get-errors";
 
@@ -39,12 +37,7 @@ class AxiosClient {
         if (session) {
           config.headers.Authorization = `Bearer ${session.user.accessToken}`;
         }
-        if (config.data) {
-          config.data = snakecaseKeys(config.data, { deep: true });
-        }
-        if (config.params) {
-          config.params = snakecaseKeys(config.params, { deep: true });
-        }
+
         return config;
       },
       (error) => {
@@ -54,7 +47,6 @@ class AxiosClient {
 
     this.axiosInstance.interceptors.response.use(
       (response) => {
-        response.data = camelcaseKeys(response.data, { deep: true });
         return response;
       },
       (error) => {

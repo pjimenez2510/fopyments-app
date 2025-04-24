@@ -17,10 +17,8 @@ import {
 import { cn } from "@/lib/utils";
 
 import { CollapseMenuButton } from "./collapse-menu-button";
-import { getMenuList } from "@/lib/menu-list";
+import { getAllMenuList } from "@/lib/menu-list";
 import { useLogout } from "@/features/auth/hooks/use-logout";
-import { useSession } from "next-auth/react";
-import { UserRole } from "@/features/users/interfaces/user.interface";
 
 interface MenuProps {
   isOpen: boolean | undefined;
@@ -28,8 +26,7 @@ interface MenuProps {
 
 export function Menu({ isOpen }: MenuProps) {
   const pathname = usePathname();
-  const session = useSession();
-  const menuList = getMenuList(pathname, session.data?.user.role as UserRole);
+  const menuList = getAllMenuList(pathname);
   const { onLogout } = useLogout();
 
   return (

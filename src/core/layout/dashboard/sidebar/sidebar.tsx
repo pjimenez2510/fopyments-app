@@ -15,7 +15,6 @@ export function Sidebar() {
   const sidebar = useStore(useSidebarToggle, (state) => state);
 
   if (!sidebar) return null;
-
   return (
     <aside
       className={cn(
@@ -35,9 +34,9 @@ export function Sidebar() {
         >
           <Link href="/" className="flex items-center gap-2">
             <Image
-              src="/images/logo.avif"
+              src="/images/logo.png"
               priority
-              alt="RentCar"
+              alt="Fopyments"
               width={40}
               height={40}
             />
@@ -49,7 +48,7 @@ export function Sidebar() {
                   : "translate-x-0 opacity-100"
               )}
             >
-              RentCar
+              Fopyments
             </h1>
           </Link>
         </Button>

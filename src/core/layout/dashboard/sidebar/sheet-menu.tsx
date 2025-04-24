@@ -37,9 +37,9 @@ export function SheetMenu() {
           >
             <Link href="/" className="flex items-center gap-2">
               <Image
-                src="/images/logo.avif"
+                src="/images/logo.png"
                 priority
-                alt="RentCar"
+                alt="Fopyments"
                 width={40}
                 height={40}
               />

@@ -74,13 +74,13 @@ export const Navbar = () => {
         <Link href="/" className="font-bold text-lg flex items-center">
           <Image
             priority
-            src="/images/logo.avif"
-            alt="RentCar logo"
+            src="/images/logo.png"
+            alt="Fopyments logo"
             className="rounded-full mr-2"
             width={40}
             height={40}
           />
-          RentCar
+          Fopyments
         </Link>
 
         <NavigationMenu className="hidden lg:block mx-auto">
@@ -144,13 +144,13 @@ export const Navbar = () => {
                     <Link href="/" className="flex items-center">
                       <Image
                         priority
-                        src="/images/logo.avif"
-                        alt="RentCar logo"
+                        src="/images/logo.png"
+                        alt="Fopyments logo"
                         className="rounded-full"
                         width={40}
                         height={40}
                       />
-                      <h1 className="text-lg font-bold ml-2">RentCar</h1>
+                      <h1 className="text-lg font-bold ml-2">Fopyments</h1>
                     </Link>
                   </SheetTitle>
                 </SheetHeader>
