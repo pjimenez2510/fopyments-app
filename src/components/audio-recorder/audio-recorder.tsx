@@ -22,18 +22,33 @@ export function AudioRecorder() {
 
       console.log(response);
 
+      // Aquí ya tenemos los datos del formulario, pero NO navegamos inmediatamente
+      setIsProcessing(false); // Detener proceso - cambiará a estado de celebración
+
+      // Esperamos 2.5 segundos para que se vea bien el estado de celebración
       if (response.formData) {
         const { path, schema } = response.formData;
-        router.push(`/management/${path}/create?data=${encodeURIComponent(JSON.stringify(schema))}`);
+        setTimeout(() => {
+          // Cierra el modal después de mostrar el estado de celebración
+          setIsModalOpen(false);
+          // Luego navega a la página del formulario
+          router.push(`/management/${path}/create?data=${encodeURIComponent(JSON.stringify(schema))}`);
+        }, 1000); // 2.5 segundos de celebración antes de navegar
+      } else {
+        // Si no hay datos de formulario, simplemente cerramos el modal después de la celebración
+        setTimeout(() => {
+          setIsModalOpen(false);
+        }, 1000);
       }
     } catch (error) {
       console.error("Error al procesar el audio:", error);
       toast.error("Error al procesar el audio", {
         description: "Por favor, intenta nuevamente más tarde"
       });
-    } finally {
       setIsProcessing(false);
-      setIsModalOpen(false);
+      setTimeout(() => {
+        setIsModalOpen(false);
+      }, 1000);
     }
   };
 

@@ -1,4 +1,3 @@
-// src/components/ui/fopy-audio-modal.tsx
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Mic, Check, Loader2 } from "lucide-react";
@@ -29,8 +28,8 @@ const stateMessages = {
     description: "Dame un momento para procesar tu mensaje"
   },
   celebrating: {
-    title: "¡Listo!",
-    description: "He registrado tu transacción"
+    title: "¡Excelente!",
+    description: "He registrado la información correctamente"
   }
 };
 
@@ -55,12 +54,8 @@ export function FopyAudioModal({ isOpen, onClose, onAudioCaptured, isProcessing 
       
       onAudioCaptured(audioBlob);
       
-      if (!isProcessing) {
-        setFopyState("celebrating");
-        setTimeout(() => {
-          setFopyState("idle");
-        }, 2000);
-      }
+      // Dejamos que el efecto de isProcessing maneje la transición a "celebrating"
+      // No regresamos automáticamente a "idle"
     } catch (error) {
       console.error('Error al detener la grabación:', error);
       setFopyState("idle");
@@ -72,11 +67,19 @@ export function FopyAudioModal({ isOpen, onClose, onAudioCaptured, isProcessing 
       setFopyState("thinking");
     } else if (fopyState === "thinking") {
       setFopyState("celebrating");
+      // No volvemos a "idle" automáticamente - esto lo controlará el componente padre
+    }
+  }, [isProcessing, fopyState]);
+
+  // Cuando se cierre el modal, volvemos a "idle"
+  React.useEffect(() => {
+    if (!isOpen) {
+      // Pequeño delay para evitar parpadeos visuales
       setTimeout(() => {
         setFopyState("idle");
-      }, 2000);
+      }, 300);
     }
-  }, [isProcessing]);
+  }, [isOpen]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
