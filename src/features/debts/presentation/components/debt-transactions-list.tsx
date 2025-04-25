@@ -15,37 +15,55 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { CalendarIcon, CreditCard, Info } from "lucide-react";
 
 interface DebtTransactionsListProps {
   debt: Debt;
 }
 
-const DebtTransactionsList = ({ debt }: DebtTransactionsListProps) => {
+export default function DebtTransactionsList({
+  debt,
+}: DebtTransactionsListProps) {
   const { data: transactions = [], isLoading } = useFindDebtTransactions(
     debt.id.toString()
   );
 
   if (isLoading) {
-    return <LoadingSpinner className="mx-auto" />;
+    return (
+      <div className="flex justify-center items-center py-8">
+        <LoadingSpinner className="mx-auto" />
+      </div>
+    );
   }
 
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle className="text-xl">Transacciones de la Deuda</CardTitle>
+    <Card className="w-full shadow-sm">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-xl font-semibold">
+          Transacciones de la Deuda
+        </CardTitle>
       </CardHeader>
       <CardContent>
         {transactions.length === 0 ? (
-          <div className="text-center py-8 text-gray-500">
-            No hay transacciones registradas para esta deuda.
+          <div className="text-center py-8 text-gray-500 flex flex-col items-center">
+            <Info className="h-8 w-8 mb-2 text-gray-400" />
+            <p>No hay transacciones registradas para esta deuda.</p>
           </div>
         ) : (
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Fecha</TableHead>
+                <TableHead>
+                  <div className="flex items-center gap-1">
+                    <CalendarIcon className="h-4 w-4" /> Fecha
+                  </div>
+                </TableHead>
                 <TableHead>Descripción</TableHead>
-                <TableHead>Método de Pago</TableHead>
+                <TableHead>
+                  <div className="flex items-center gap-1">
+                    <CreditCard className="h-4 w-4" /> Método de Pago
+                  </div>
+                </TableHead>
                 <TableHead>Monto</TableHead>
                 <TableHead>Tipo</TableHead>
               </TableRow>
@@ -53,7 +71,7 @@ const DebtTransactionsList = ({ debt }: DebtTransactionsListProps) => {
             <TableBody>
               {transactions.map((transaction) => (
                 <TableRow key={transaction.id}>
-                  <TableCell>
+                  <TableCell className="font-medium">
                     {formatDate(new Date(transaction.date), "dd/MM/yyyy")}
                   </TableCell>
                   <TableCell>{transaction.description || "—"}</TableCell>
@@ -70,6 +88,7 @@ const DebtTransactionsList = ({ debt }: DebtTransactionsListProps) => {
                           ? "default"
                           : "destructive"
                       }
+                      className="capitalize"
                     >
                       {transaction.type === "INCOME" ? "Ingreso" : "Gasto"}
                     </Badge>
@@ -82,6 +101,4 @@ const DebtTransactionsList = ({ debt }: DebtTransactionsListProps) => {
       </CardContent>
     </Card>
   );
-};
-
-export default DebtTransactionsList;
+}
