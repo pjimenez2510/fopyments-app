@@ -10,6 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@heroicons/react": "^2.2.0",
     "@hookform/resolvers": "^3.9.0",
     "@radix-ui/react-alert-dialog": "^1.1.2",
     "@radix-ui/react-avatar": "^1.1.1",
@@ -51,6 +52,7 @@
     "react-hook-form": "^7.53.0",
     "sharp": "^0.33.5",
     "snakecase-keys": "^8.0.1",
+    "socket.io-client": "^4.7.5",
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.5.3",
     "tailwindcss-animate": "^1.0.7",
