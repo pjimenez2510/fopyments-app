@@ -38,9 +38,7 @@ export default function DebtPaymentForm({ debt }: DebtPaymentFormProps) {
           name="amount"
           label="Monto a Pagar"
           type="number"
-          step="0.01"
           placeholder="0.00"
-          helperText={`Monto pendiente: ${formatCurrency(debt.pending_amount)}`}
         />
 
         {isError && (
@@ -56,7 +54,7 @@ export default function DebtPaymentForm({ debt }: DebtPaymentFormProps) {
             className="flex items-center gap-2"
           >
             {isLoading ? (
-              <LoadingSpinner size="sm" />
+              <LoadingSpinner size={16} />
             ) : (
               <DollarSign className="h-4 w-4" />
             )}
