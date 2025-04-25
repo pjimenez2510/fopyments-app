@@ -38,6 +38,13 @@ export const getAllMenuList = (pathname: string) => {
           icon: CreditCard,
           submenus: [],
         },
+        {
+          href: "/management/debts",
+          label: "Deudas",
+          active: pathname.startsWith("/management/debts"),
+          icon: CreditCard,
+          submenus: [],
+        },
       ],
     },
   ];
