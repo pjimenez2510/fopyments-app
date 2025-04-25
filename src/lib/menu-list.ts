@@ -45,6 +45,13 @@ export const getAllMenuList = (pathname: string) => {
           icon: CreditCard,
           submenus: [],
         },
+        {
+          href: "/management/payment-methods",
+          label: "Métodos de Pago",
+          active: pathname.startsWith("/management/payment-methods"),
+          icon: CreditCard,
+          submenus: [],
+        },
       ],
     },
   ];
