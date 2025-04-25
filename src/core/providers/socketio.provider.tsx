@@ -36,6 +36,7 @@ export const SocketIOProvider: React.FC<SocketIOProviderProps> = ({
   children,
 }) => {
   const { data: session, status } = useSession();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [notifications, setNotifications] = useState<INotification[]>([]);

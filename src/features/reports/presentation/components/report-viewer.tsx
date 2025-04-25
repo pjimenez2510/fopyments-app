@@ -54,9 +54,6 @@ export default function ReportViewer({ report }: ReportViewerProps) {
     downloadReport.mutate({ id: report.id, report });
   };
 
-  // Determinar si el reporte ha expirado
-  const isExpired = new Date(report.expiresAt) < new Date();
-
   return (
     <Card className="w-full shadow-md hover:shadow-lg transition-shadow">
       <CardHeader className="pb-2">
@@ -65,9 +62,7 @@ export default function ReportViewer({ report }: ReportViewerProps) {
             {REPORT_TYPE_LABELS[report.type] || report.type}
           </CardTitle>
           <div className="flex gap-2">
-            <Badge variant={isExpired ? "destructive" : "default"}>
-              {isExpired ? "Expirado" : "Disponible"}
-            </Badge>
+            <Badge variant={"default"}>{"Disponible"}</Badge>
             <Badge variant="outline">
               {REPORT_FORMAT_LABELS[report.format] || report.format}
             </Badge>
@@ -96,7 +91,7 @@ export default function ReportViewer({ report }: ReportViewerProps) {
           variant="outline"
           className="flex items-center gap-1"
           onClick={handleDownload}
-          disabled={downloadReport.isPending || isExpired}
+          disabled={downloadReport.isPending}
         >
           {downloadReport.isPending ? (
             <>

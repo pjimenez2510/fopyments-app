@@ -13,7 +13,7 @@ const debtPaymentFormSchema = z.object({
     .refine((val) => val > 0, {
       message: "El monto del pago debe ser mayor que 0",
     }),
-  payment_method_id: z.string().optional(),
+  payment_method_id: z.coerce.string().optional(),
   description: z.string().optional(),
 });
 

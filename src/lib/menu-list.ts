@@ -2,8 +2,8 @@ import {
   ArrowLeftRight,
   BanknoteArrowDown,
   CreditCard,
-  FileText,
   HandCoins,
+  LayoutDashboard,
   LucideIcon,
   Target,
 } from "lucide-react";
@@ -32,6 +32,14 @@ export const getAllMenuList = (pathname: string) => {
     {
       groupLabel: "Módulos",
       menus: [
+        {
+          href: "/management",
+          label: "Dashboard",
+          active: pathname === "/management",
+          icon: LayoutDashboard,
+          submenus: [],
+        },
+
         {
           href: "/management/goals",
           label: "Metas",
@@ -65,13 +73,6 @@ export const getAllMenuList = (pathname: string) => {
           label: "Transacciones",
           active: pathname.startsWith("/management/transactions"),
           icon: ArrowLeftRight,
-          submenus: [],
-        },
-        {
-          href: "/management/reports",
-          label: "Reportes",
-          active: pathname.startsWith("/management/reports"),
-          icon: FileText,
           submenus: [],
         },
       ],
