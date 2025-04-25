@@ -1,4 +1,5 @@
 import AxiosClient from "@/core/infrastructure/http/axios-client";
+import { Transaction } from "@/features/transactions/interfaces/transaction.interface";
 import {
   Debt,
   DebtCreate,
@@ -75,6 +76,13 @@ export class DebtService implements IDebtService {
     const { data } = await this.axiosClient.post<Debt>(
       `${this.url}/${debtId}/users/${userId}/pay`,
       payment
+    );
+    return data.data;
+  }
+
+  async getDebtTransactions(debtId: number): Promise<Transaction[]> {
+    const { data } = await this.axiosClient.get<Transaction[]>(
+      `${this.url}/${debtId}/transactions`
     );
     return data.data;
   }

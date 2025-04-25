@@ -13,6 +13,8 @@ const debtPaymentFormSchema = z.object({
     .refine((val) => val > 0, {
       message: "El monto del pago debe ser mayor que 0",
     }),
+  payment_method_id: z.string().optional(),
+  description: z.string().optional(),
 });
 
 export type DebtPaymentFormValues = z.infer<typeof debtPaymentFormSchema>;
@@ -24,6 +26,8 @@ export const useDebtPaymentForm = (debt: Debt) => {
 
   const defaultValues: DebtPaymentFormValues = {
     amount: debt?.pending_amount || 0,
+    payment_method_id: "",
+    description: "",
   };
 
   const methods = useForm<DebtPaymentFormValues>({
@@ -36,6 +40,10 @@ export const useDebtPaymentForm = (debt: Debt) => {
   const onSubmit = handleSubmit((data) => {
     const payment: DebtPayment = {
       amount: data.amount,
+      payment_method_id: data.payment_method_id
+        ? Number(data.payment_method_id)
+        : undefined,
+      description: data.description,
     };
 
     payDebtMutation.mutate(

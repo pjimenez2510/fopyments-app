@@ -8,6 +8,10 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { Button } from "@/components/ui/button";
 import { Debt } from "../../interfaces/debts.interface";
 import { formatCurrency } from "@/lib/format-currency";
+import RHFSelect from "@/components/rhf/RHFSelect";
+import { Textarea } from "@/components/ui/textarea";
+import { useFindAllPaymentMethods } from "@/features/payment-methods/hooks/use-payment-methods-queries";
+import { Label } from "@/components/ui/label";
 
 interface DebtPaymentFormProps {
   debt: Debt;
@@ -16,6 +20,12 @@ interface DebtPaymentFormProps {
 export default function DebtPaymentForm({ debt }: DebtPaymentFormProps) {
   const { methods, onSubmit, isLoading, isError, error } =
     useDebtPaymentForm(debt);
+  const { data: paymentMethods = [] } = useFindAllPaymentMethods();
+
+  const paymentMethodOptions = paymentMethods.map((method) => ({
+    value: method.id.toString(),
+    label: method.name,
+  }));
 
   return (
     <FormProvider {...methods}>
@@ -40,6 +50,22 @@ export default function DebtPaymentForm({ debt }: DebtPaymentFormProps) {
           type="number"
           placeholder="0.00"
         />
+
+        <RHFSelect
+          name="payment_method_id"
+          label="Método de Pago (opcional)"
+          placeholder="Selecciona un método de pago"
+          options={paymentMethodOptions}
+        />
+
+        <div className="space-y-2">
+          <Label htmlFor="description">Descripción (opcional)</Label>
+          <Textarea
+            id="description"
+            placeholder="Añade una descripción para este pago..."
+            {...methods.register("description")}
+          />
+        </div>
 
         {isError && (
           <div className="p-3 bg-red-50 text-red-500 rounded-md text-sm">

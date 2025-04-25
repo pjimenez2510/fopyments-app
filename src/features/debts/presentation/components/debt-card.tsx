@@ -11,7 +11,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { formatCurrency } from "@/lib/format-currency";
 import { formatDate } from "@/lib/format-date";
-import { Edit, DollarSign, Trash } from "lucide-react";
+import { Edit, DollarSign, Trash, ListFilter } from "lucide-react";
 import { Debt } from "../../interfaces/debts.interface";
 import { useRouter } from "next/navigation";
 import { useDeleteDebt } from "../../hooks/use-debts-queries";
@@ -36,6 +36,10 @@ export default function DebtCard({ debt }: DebtCardProps) {
 
   const handlePayment = () => {
     router.push(`/management/debts/pay/${debt.id}`);
+  };
+
+  const handleViewTransactions = () => {
+    router.push(`/management/debts/transactions/${debt.id}`);
   };
 
   return (
@@ -74,11 +78,15 @@ export default function DebtCard({ debt }: DebtCardProps) {
           </div>
         </div>
       </CardContent>
-      <CardFooter className="pt-2 flex justify-between">
-        <div className="flex gap-2">
+      <CardFooter className="pt-2 flex justify-between flex-wrap gap-2">
+        <div className="flex gap-2 flex-wrap">
           <Button onClick={handleEdit} size="sm" variant="outline">
             <Edit className="h-4 w-4 mr-1" />
             Editar
+          </Button>
+          <Button onClick={handleViewTransactions} size="sm" variant="outline">
+            <ListFilter className="h-4 w-4 mr-1" />
+            Transacciones
           </Button>
           <Button onClick={handleDelete} size="sm" variant="destructive">
             <Trash className="h-4 w-4 mr-1" />

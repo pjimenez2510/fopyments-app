@@ -25,4 +25,6 @@ export type DebtUpdate = Partial<DebtBase>;
 
 export interface DebtPayment {
   amount: number;
+  payment_method_id?: number;
+  description?: string;
 }
