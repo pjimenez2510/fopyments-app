@@ -11,10 +11,12 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { formatCurrency } from "@/lib/format-currency";
 import { formatDate } from "@/lib/format-date";
-import { Edit, Trash, CreditCard, List } from "lucide-react";
+import { Edit, Trash, DollarSign, Eye } from "lucide-react";
 import { Goal } from "../../interfaces/ goals.interface";
 import { useRouter } from "next/navigation";
 import { useDeleteGoal } from "../../hooks/use-goals-queries";
+import { cn } from "@/lib/utils";
+import { calculateGoalProgressStatus } from "../../utils/progress-utils";
 
 interface GoalCardProps {
   goal: Goal;
@@ -24,9 +26,9 @@ const GoalCard = ({ goal }: GoalCardProps) => {
   const router = useRouter();
   const deleteGoal = useDeleteGoal();
 
-  console.log(goal);
-
-  const progress = (goal.current_amount / goal.target_amount) * 100;
+  // Calcular el progreso y estado usando la función de utilidad
+  const { progressColor, statusText, progressPercentage } =
+    calculateGoalProgressStatus(goal);
 
   const handleEdit = () => {
     router.push(`/management/goals/edit/${goal.id}`);
@@ -48,51 +50,58 @@ const GoalCard = ({ goal }: GoalCardProps) => {
 
   return (
     <Card className="w-full shadow-md hover:shadow-lg transition-shadow">
-      <CardHeader>
-        <CardTitle className="flex justify-between items-center">
-          <span>{goal.name}</span>
-          <span className="text-sm font-normal">
+      <CardHeader className="pb-2">
+        <div className="flex justify-between items-start">
+          <CardTitle className="text-xl">{goal.name}</CardTitle>
+          <span className="text-sm text-muted-foreground">
             Fecha límite: {formatDate(new Date(goal.end_date), "dd/MM/yyyy")}
           </span>
-        </CardTitle>
+        </div>
       </CardHeader>
-      <CardContent className="pt-4 space-y-4">
-        <div className="flex justify-between items-center">
-          <span className="text-sm text-gray-500 dark:text-gray-400">
-            Progreso actual
-          </span>
-          <span className="font-bold">
+      <CardContent className="space-y-4 pb-0">
+        <div className="grid grid-cols-2 gap-2 text-sm">
+          <span className="text-muted-foreground">Progreso actual</span>
+          <span className="text-right font-medium">
             {formatCurrency(goal.current_amount)} /{" "}
             {formatCurrency(goal.target_amount)}
           </span>
         </div>
-        <Progress value={progress} className="h-2 w-full" />
-        <div className="text-right text-sm">
-          {progress.toFixed(0)}% completado
+
+        <div className="space-y-1">
+          <Progress
+            value={progressPercentage}
+            className={cn("h-2 w-full", progressColor)}
+          />
+          <div className="flex justify-between text-sm">
+            <span className="text-muted-foreground">{statusText}</span>
+            <span className="text-muted-foreground">
+              {progressPercentage.toFixed(0)}% completado
+            </span>
+          </div>
         </div>
       </CardContent>
-      <CardFooter className="flex flex-wrap justify-end gap-2 pt-0">
+      <CardFooter className="flex flex-wrap justify-end gap-2 pt-4">
         <Button
           size="sm"
-          variant="ghost"
+          variant="outline"
+          className="flex items-center gap-1"
+          onClick={handleViewTransactions}
+        >
+          <Eye className="h-4 w-4" />
+          <span>Ver Transacciones</span>
+        </Button>
+        <Button
+          size="sm"
+          variant="outline"
           className="flex items-center gap-1"
           onClick={handleAddContribution}
         >
-          <CreditCard className="h-4 w-4" />
+          <DollarSign className="h-4 w-4" />
           <span>Contribuir</span>
         </Button>
         <Button
           size="sm"
-          variant="ghost"
-          className="flex items-center gap-1"
-          onClick={handleViewTransactions}
-        >
-          <List className="h-4 w-4" />
-          <span>Transacciones</span>
-        </Button>
-        <Button
-          size="sm"
-          variant="ghost"
+          variant="outline"
           className="flex items-center gap-1"
           onClick={handleEdit}
         >
@@ -101,8 +110,8 @@ const GoalCard = ({ goal }: GoalCardProps) => {
         </Button>
         <Button
           size="sm"
-          variant="ghost"
-          className="flex items-center gap-1 text-destructive"
+          variant="destructive"
+          className="flex items-center gap-1"
           onClick={handleDelete}
         >
           <Trash className="h-4 w-4" />

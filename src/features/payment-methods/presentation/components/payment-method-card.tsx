@@ -1,7 +1,8 @@
+"use client";
+
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -12,7 +13,7 @@ import {
   PAYMENT_METHOD_TYPES,
 } from "../../interfaces/payment-methods.interface";
 import { Badge } from "@/components/ui/badge";
-import { Pencil, Trash2 } from "lucide-react";
+import { Edit, Trash } from "lucide-react";
 import Link from "next/link";
 
 interface PaymentMethodCardProps {
@@ -31,51 +32,49 @@ export function PaymentMethodCard({
       ?.label || paymentMethod.type;
 
   return (
-    <Card className="w-full">
-      <CardHeader>
+    <Card className="w-full shadow-md hover:shadow-lg transition-shadow">
+      <CardHeader className="pb-2">
         <div className="flex justify-between items-start">
-          <div>
-            <CardTitle>{paymentMethod.name}</CardTitle>
-
-            <CardDescription>
-              <div className="flex items-center gap-2 mt-1">
-                <Badge variant="outline">{typeLabel}</Badge>
-              </div>
-            </CardDescription>
-          </div>
+          <CardTitle className="text-xl">{paymentMethod.name}</CardTitle>
+          <Badge variant="outline">{typeLabel}</Badge>
         </div>
       </CardHeader>
-      <CardContent>
-        <div className="space-y-2">
+      <CardContent className="space-y-4 pb-0">
+        <div className="grid grid-cols-2 gap-2 text-sm">
           {paymentMethod.last_four_digits && (
-            <p className="text-sm text-muted-foreground">
-              Últimos 4 dígitos:{" "}
-              <span className="font-semibold">
+            <>
+              <span className="text-muted-foreground">Últimos 4 dígitos:</span>
+              <span className="text-right font-medium">
                 {paymentMethod.last_four_digits}
               </span>
-            </p>
+            </>
           )}
         </div>
       </CardContent>
-      <CardFooter className="flex justify-between">
+      <CardFooter className="flex flex-wrap justify-end gap-2 pt-4">
         <Link
           href={`/management/payment-methods/edit/${paymentMethod.id}`}
           passHref
         >
-          <Button variant="outline" size="sm">
-            <Pencil className="h-4 w-4 mr-2" />
-            Editar
+          <Button
+            variant="outline"
+            size="sm"
+            className="flex items-center gap-1"
+          >
+            <Edit className="h-4 w-4" />
+            <span>Editar</span>
           </Button>
         </Link>
         {onDelete && (
           <Button
             variant="destructive"
             size="sm"
+            className="flex items-center gap-1"
             onClick={() => onDelete(paymentMethod.id)}
             disabled={isDeleting}
           >
-            <Trash2 className="h-4 w-4 mr-2" />
-            {isDeleting ? "Eliminando..." : "Eliminar"}
+            <Trash className="h-4 w-4" />
+            <span>{isDeleting ? "Eliminando..." : "Eliminar"}</span>
           </Button>
         )}
       </CardFooter>

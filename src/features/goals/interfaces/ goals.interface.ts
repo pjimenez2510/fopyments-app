@@ -11,6 +11,7 @@ export interface Goal extends GoalBase {
   id: number;
   user_id: number;
   end_date: Date;
+  created_at?: Date;
   contribution_amount: number;
   category: Category;
 }

@@ -10,10 +10,12 @@ import {
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { formatCurrency } from "@/lib/format-currency";
-import { DollarSign, Edit, Eye, Plus, Trash } from "lucide-react";
+import { DollarSign, Edit, Eye, Trash } from "lucide-react";
 import { Budget } from "../../interfaces/budgets.interface";
 import { useRouter } from "next/navigation";
 import { useDeleteBudget } from "../../hooks/use-budgets-queries";
+import { cn } from "@/lib/utils";
+import { calculateBudgetProgressStatus } from "../../utils/progress-utils";
 
 interface BudgetCardProps {
   budget: Budget;
@@ -23,11 +25,9 @@ const BudgetCard = ({ budget }: BudgetCardProps) => {
   const router = useRouter();
   const deleteBudget = useDeleteBudget();
 
-  const progress = Math.min(
-    (budget.current_amount / budget.limit_amount) * 100,
-    100
-  );
-  const isOverBudget = budget.current_amount > budget.limit_amount;
+  // Calcular el progreso y estado usando la función de utilidad
+  const { progressColor, statusText, progressPercentage, isOverBudget } =
+    calculateBudgetProgressStatus(budget);
 
   const handleEdit = () => {
     router.push(`/management/budgets/edit/${budget.id}`);
@@ -37,10 +37,6 @@ const BudgetCard = ({ budget }: BudgetCardProps) => {
     if (confirm("¿Estás seguro de eliminar este presupuesto?")) {
       await deleteBudget.mutateAsync(budget.id);
     }
-  };
-
-  const handleAddAmount = () => {
-    router.push(`/management/budgets/amount/${budget.id}`);
   };
 
   const handleViewTransactions = () => {
@@ -57,47 +53,53 @@ const BudgetCard = ({ budget }: BudgetCardProps) => {
         isOverBudget ? "border-destructive" : ""
       }`}
     >
-      <CardHeader className={isOverBudget ? "bg-destructive/10" : ""}>
-        <CardTitle className="flex justify-between items-center">
-          <span>{budget.category?.name}</span>
-          <span className="text-sm font-normal">
+      <CardHeader className="pb-2">
+        <div className="flex justify-between items-start">
+          <CardTitle className="text-xl">{budget.category?.name}</CardTitle>
+          <span className="text-sm text-muted-foreground">
             {budget.month &&
               new Date(budget.month).toLocaleDateString("es-ES", {
                 month: "long",
                 year: "numeric",
               })}
           </span>
-        </CardTitle>
+        </div>
       </CardHeader>
-      <CardContent className="pt-4 space-y-4">
-        <div className="flex justify-between items-center">
-          <span className="text-sm text-gray-500 dark:text-gray-400">
-            Uso del presupuesto
-          </span>
+      <CardContent className="space-y-4 pb-0">
+        <div className="grid grid-cols-2 gap-2 text-sm">
+          <span className="text-muted-foreground">Uso del presupuesto</span>
           <span
-            className={`font-bold ${isOverBudget ? "text-destructive" : ""}`}
+            className={`text-right font-medium ${
+              isOverBudget ? "text-destructive" : ""
+            }`}
           >
             {formatCurrency(budget.current_amount)} /{" "}
             {formatCurrency(budget.limit_amount)}
           </span>
         </div>
-        <Progress
-          value={progress}
-          className={`h-2 w-full ${isOverBudget ? "bg-red-200" : ""}`}
-        />
-        <div
-          className={`text-right text-sm ${
-            isOverBudget ? "text-destructive" : ""
-          }`}
-        >
-          {progress.toFixed(0)}% utilizado
-          {isOverBudget && " (Excedido)"}
+
+        <div className="space-y-1">
+          <Progress
+            value={progressPercentage}
+            className={cn("h-2 w-full", progressColor)}
+          />
+          <div className="flex justify-between text-sm">
+            <span className="text-muted-foreground">{statusText}</span>
+            <span
+              className={`text-muted-foreground ${
+                isOverBudget ? "text-destructive" : ""
+              }`}
+            >
+              {progressPercentage.toFixed(0)}% utilizado
+              {isOverBudget && " (Excedido)"}
+            </span>
+          </div>
         </div>
       </CardContent>
-      <CardFooter className="flex flex-wrap justify-end gap-2 pt-0">
+      <CardFooter className="flex flex-wrap justify-end gap-2 pt-4">
         <Button
           size="sm"
-          variant="ghost"
+          variant="outline"
           className="flex items-center gap-1"
           onClick={handleViewTransactions}
         >
@@ -106,7 +108,7 @@ const BudgetCard = ({ budget }: BudgetCardProps) => {
         </Button>
         <Button
           size="sm"
-          variant="ghost"
+          variant="outline"
           className="flex items-center gap-1"
           onClick={handleAddTransaction}
         >
@@ -115,16 +117,7 @@ const BudgetCard = ({ budget }: BudgetCardProps) => {
         </Button>
         <Button
           size="sm"
-          variant="ghost"
-          className="flex items-center gap-1"
-          onClick={handleAddAmount}
-        >
-          <Plus className="h-4 w-4" />
-          <span>Actualizar</span>
-        </Button>
-        <Button
-          size="sm"
-          variant="ghost"
+          variant="outline"
           className="flex items-center gap-1"
           onClick={handleEdit}
         >
@@ -133,8 +126,8 @@ const BudgetCard = ({ budget }: BudgetCardProps) => {
         </Button>
         <Button
           size="sm"
-          variant="ghost"
-          className="flex items-center gap-1 text-destructive"
+          variant="destructive"
+          className="flex items-center gap-1"
           onClick={handleDelete}
         >
           <Trash className="h-4 w-4" />

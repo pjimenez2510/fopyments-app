@@ -26,7 +26,10 @@ export default function DebtForm({ debt }: DebtFormProps) {
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={onSubmit} className="space-y-4">
+      <form
+        onSubmit={onSubmit}
+        className="flex flex-col items-center w-full max-w-xl mx-auto"
+      >
         <RHFInput
           name="description"
           label="Descripción"

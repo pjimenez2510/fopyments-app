@@ -21,7 +21,11 @@ const transactionSchema = z.object({
   type: z.nativeEnum(TransactionType),
   category_id: z.coerce.number().nullable().optional(),
   description: z.string().nullable().optional(),
-  payment_method_id: z.coerce.number().nullable().optional(),
+  payment_method_id: z.coerce
+    .number({
+      invalid_type_error: "El método de pago debe ser un número",
+    })
+    .min(1, "El método de pago es requerido"),
   date: z.coerce.date({
     invalid_type_error: "La fecha debe ser válida",
   }),
@@ -49,7 +53,7 @@ export const useTransactionForm = ({
       type: transaction?.type || TransactionType.EXPENSE,
       category_id: transaction?.category_id || null,
       description: transaction?.description || "",
-      payment_method_id: transaction?.payment_method_id || null,
+      payment_method_id: transaction?.payment_method_id || undefined,
       date: transaction?.date ? new Date(transaction.date) : new Date(),
     },
   });

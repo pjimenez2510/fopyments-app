@@ -1,158 +1,101 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatCurrency } from "@/lib/format-currency";
-import { Progress } from "@/components/ui/progress";
-import { useSession } from "next-auth/react";
-import { useState } from "react";
-import { Goal } from "../../interfaces/ goals.interface";
-import { useCreateGoalContribution } from "../../hooks/use-goals-queries";
-import { useRouter } from "next/navigation";
-import { ArrowLeft, Save } from "lucide-react";
+import RHFInput from "@/components/rhf/RHFInput";
+import { FormProvider } from "react-hook-form";
+import { Save, ArrowLeft } from "lucide-react";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Goal } from "../../interfaces/ goals.interface";
+import { formatCurrency } from "@/lib/format-currency";
+import RHFSelect from "@/components/rhf/RHFSelect";
 import { useFindAllPaymentMethods } from "@/features/payment-methods/hooks/use-payment-methods-queries";
-import { Textarea } from "@/components/ui/textarea";
+import { useGoalContributionForm } from "../../hooks/use-goal-contribution-form";
+import { useRouter } from "next/navigation";
 
 interface GoalContributionFormProps {
   goal: Goal;
 }
 
-const GoalContributionForm = ({ goal }: GoalContributionFormProps) => {
-  const [amount, setAmount] = useState<number>(0);
-  const [paymentMethodId, setPaymentMethodId] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
-  const { data } = useSession();
-  const user = data?.user;
-  const createContribution = useCreateGoalContribution();
+export default function GoalContributionForm({
+  goal,
+}: GoalContributionFormProps) {
   const router = useRouter();
-  const progress = (goal.current_amount / goal.target_amount) * 100;
+  const { methods, onSubmit, isLoading } = useGoalContributionForm(goal);
   const { data: paymentMethods = [] } = useFindAllPaymentMethods();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!user?.id) return;
-
-    await createContribution.mutateAsync({
-      goalId: goal.id,
-      userId: Number(user.id),
-      amount,
-      paymentMethodId: paymentMethodId ? Number(paymentMethodId) : undefined,
-      description: description || undefined,
-    });
-
-    router.back();
-  };
-
-  const handleCancel = () => {
-    router.back();
-  };
+  const paymentMethodOptions = paymentMethods.map((method) => ({
+    value: method.id.toString(),
+    label: method.name,
+  }));
 
   return (
-    <Card className="w-full max-w-md mx-auto">
-      <CardHeader>
-        <CardTitle>{goal.name}</CardTitle>
-      </CardHeader>
-      <CardContent className="pt-4 space-y-4">
-        <div className="flex justify-between items-center">
-          <span className="text-sm text-gray-500 dark:text-gray-400">
-            Progreso actual
-          </span>
-          <span className="font-bold">
-            {formatCurrency(goal.current_amount)} /{" "}
-            {formatCurrency(goal.target_amount)}
-          </span>
+    <FormProvider {...methods}>
+      <form
+        onSubmit={onSubmit}
+        className="flex flex-col items-center w-full max-w-xl mx-auto"
+      >
+        <div className="bg-gray-50 p-4 rounded-lg space-y-2 mb-4 w-full">
+          <h3 className="font-semibold text-lg">{goal.name}</h3>
+          <div className="grid grid-cols-2 text-sm mb-2">
+            <span className="text-gray-500">Meta total:</span>
+            <span className="font-medium">
+              {formatCurrency(goal.target_amount)}
+            </span>
+            <span className="text-gray-500">Acumulado:</span>
+            <span className="font-medium text-green-600">
+              {formatCurrency(goal.current_amount)}
+            </span>
+            <span className="text-gray-500">Pendiente:</span>
+            <span className="font-medium text-red-600">
+              {formatCurrency(goal.target_amount - goal.current_amount)}
+            </span>
+          </div>
         </div>
-        <Progress value={progress} className="h-2 w-full" />
-        <div className="text-right text-sm">
-          {progress.toFixed(0)}% completado
+
+        <RHFInput
+          name="amount"
+          label="Cantidad a contribuir"
+          type="number"
+          placeholder="0.00"
+        />
+
+        <RHFSelect
+          name="payment_method_id"
+          label="Método de Pago (opcional)"
+          placeholder="Selecciona un método de pago"
+          options={paymentMethodOptions}
+        />
+
+        <RHFInput
+          name="description"
+          label="Descripción (opcional)"
+          placeholder="Añade una descripción para esta contribución..."
+        />
+
+        <div className="flex items-center gap-2">
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={() => router.back()}
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            <span>Volver</span>
+          </Button>
+          <Button
+            type="submit"
+            disabled={isLoading}
+            className="flex items-center gap-2"
+          >
+            {isLoading ? (
+              <LoadingSpinner size={16} />
+            ) : (
+              <Save className="h-4 w-4" />
+            )}
+            <span>Guardar Contribución</span>
+          </Button>
         </div>
-
-        <form onSubmit={handleSubmit} className="space-y-4 pt-4">
-          <div className="space-y-2">
-            <label htmlFor="amount" className="block text-sm font-medium">
-              Cantidad a contribuir
-            </label>
-            <Input
-              id="amount"
-              type="number"
-              min={0}
-              step="0.01"
-              value={amount || ""}
-              onChange={(e) => setAmount(Number(e.target.value))}
-              placeholder="0.00"
-              required
-            />
-          </div>
-
-          <div className="space-y-2">
-            <label
-              htmlFor="paymentMethod"
-              className="block text-sm font-medium"
-            >
-              Método de pago (opcional)
-            </label>
-            <Select value={paymentMethodId} onValueChange={setPaymentMethodId}>
-              <SelectTrigger>
-                <SelectValue placeholder="Seleccionar método de pago" />
-              </SelectTrigger>
-              <SelectContent>
-                {paymentMethods.map((method) => (
-                  <SelectItem key={method.id} value={method.id.toString()}>
-                    {method.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <label htmlFor="description" className="block text-sm font-medium">
-              Descripción (opcional)
-            </label>
-            <Textarea
-              id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Contribución para..."
-            />
-          </div>
-
-          <div className="pt-2 flex justify-between">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleCancel}
-              className="flex items-center gap-1"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              <span>Volver</span>
-            </Button>
-            <Button
-              type="submit"
-              disabled={createContribution.isPending || amount <= 0}
-              className="flex items-center gap-1"
-            >
-              {createContribution.isPending ? (
-                <LoadingSpinner />
-              ) : (
-                <Save className="h-4 w-4" />
-              )}
-              <span>Guardar Contribución</span>
-            </Button>
-          </div>
-        </form>
-      </CardContent>
-    </Card>
+      </form>
+    </FormProvider>
   );
-};
-
-export default GoalContributionForm;
+}
