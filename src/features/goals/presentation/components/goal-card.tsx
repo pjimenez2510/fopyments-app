@@ -11,7 +11,7 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { formatCurrency } from "@/lib/format-currency";
 import { formatDate } from "@/lib/format-date";
-import { Edit, Plus, Trash } from "lucide-react";
+import { Edit, Trash, CreditCard, List } from "lucide-react";
 import { Goal } from "../../interfaces/ goals.interface";
 import { useRouter } from "next/navigation";
 import { useDeleteGoal } from "../../hooks/use-goals-queries";
@@ -38,8 +38,12 @@ const GoalCard = ({ goal }: GoalCardProps) => {
     }
   };
 
-  const handleAddProgress = () => {
-    router.push(`/management/goals/progress/${goal.id}`);
+  const handleAddContribution = () => {
+    router.push(`/management/goals/contribution/${goal.id}`);
+  };
+
+  const handleViewTransactions = () => {
+    router.push(`/management/goals/transactions/${goal.id}`);
   };
 
   return (
@@ -73,15 +77,24 @@ const GoalCard = ({ goal }: GoalCardProps) => {
           </div>
         )}
       </CardContent>
-      <CardFooter className="flex justify-end gap-2 pt-0">
+      <CardFooter className="flex flex-wrap justify-end gap-2 pt-0">
         <Button
           size="sm"
           variant="ghost"
           className="flex items-center gap-1"
-          onClick={handleAddProgress}
+          onClick={handleAddContribution}
         >
-          <Plus className="h-4 w-4" />
-          <span>Progreso</span>
+          <CreditCard className="h-4 w-4" />
+          <span>Contribuir</span>
+        </Button>
+        <Button
+          size="sm"
+          variant="ghost"
+          className="flex items-center gap-1"
+          onClick={handleViewTransactions}
+        >
+          <List className="h-4 w-4" />
+          <span>Transacciones</span>
         </Button>
         <Button
           size="sm"

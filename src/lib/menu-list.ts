@@ -1,7 +1,8 @@
 import {
   ArrowLeftRight,
-  Banknote,
+  BanknoteArrowDown,
   CreditCard,
+  HandCoins,
   LucideIcon,
   Target,
 } from "lucide-react";
@@ -41,14 +42,14 @@ export const getAllMenuList = (pathname: string) => {
           href: "/management/budgets",
           label: "Presupuestos",
           active: pathname.startsWith("/management/budgets"),
-          icon: CreditCard,
+          icon: HandCoins,
           submenus: [],
         },
         {
           href: "/management/debts",
           label: "Deudas",
           active: pathname.startsWith("/management/debts"),
-          icon: Banknote,
+          icon: BanknoteArrowDown,
           submenus: [],
         },
         {
