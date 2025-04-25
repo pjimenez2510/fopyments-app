@@ -1,15 +1,18 @@
+// src/components/ui/fopy-audio-modal.tsx
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Mic, Check, Download } from "lucide-react";
+import { Mic, Check, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { FopyStates, type FopyState } from "./fopy-states";
 import { cn } from "@/lib/utils";
-import { startRecording, stopRecording, createDownloadLink } from "@/lib/audio-converter";
+import { useAudioRecorder } from "@/hooks/use-audio-recorder";
+import React from "react";
 
 interface FopyAudioModalProps {
   isOpen: boolean;
   onClose: () => void;
   onAudioCaptured: (audioBlob: Blob) => void;
+  isProcessing?: boolean;
 }
 
 const stateMessages = {
@@ -19,7 +22,7 @@ const stateMessages = {
   },
   listening: {
     title: "Te escucho...",
-    description: "Di algo como &quot;Gasté 25 dólares en comida&quot;"
+    description: "Di algo como \"Gasté 25 dólares en comida\""
   },
   thinking: {
     title: "Procesando...",
@@ -31,9 +34,9 @@ const stateMessages = {
   }
 };
 
-export function FopyAudioModal({ isOpen, onClose, onAudioCaptured }: FopyAudioModalProps) {
+export function FopyAudioModal({ isOpen, onClose, onAudioCaptured, isProcessing = false }: FopyAudioModalProps) {
   const [fopyState, setFopyState] = useState<FopyState>("idle");
-  const [lastRecordingBlob, setLastRecordingBlob] = useState<Blob | null>(null);
+  const { isRecording, startRecording, stopRecording } = useAudioRecorder();
 
   const handleStartRecording = async () => {
     try {
@@ -50,26 +53,30 @@ export function FopyAudioModal({ isOpen, onClose, onAudioCaptured }: FopyAudioMo
       const audioBlob = await stopRecording();
       setFopyState("thinking");
       
-      setLastRecordingBlob(audioBlob);
       onAudioCaptured(audioBlob);
-      setFopyState("celebrating");
       
-      setTimeout(() => {
-        setFopyState("idle");
-      }, 2000);
+      if (!isProcessing) {
+        setFopyState("celebrating");
+        setTimeout(() => {
+          setFopyState("idle");
+        }, 2000);
+      }
     } catch (error) {
       console.error('Error al detener la grabación:', error);
       setFopyState("idle");
     }
   };
 
-  const handleDownload = () => {
-    if (lastRecordingBlob) {
-      createDownloadLink(lastRecordingBlob);
+  React.useEffect(() => {
+    if (isProcessing) {
+      setFopyState("thinking");
+    } else if (fopyState === "thinking") {
+      setFopyState("celebrating");
+      setTimeout(() => {
+        setFopyState("idle");
+      }, 2000);
     }
-  };
-
-  const isRecording = fopyState === "listening";
+  }, [isProcessing]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -87,23 +94,14 @@ export function FopyAudioModal({ isOpen, onClose, onAudioCaptured }: FopyAudioMo
 
             <div className="z-10 flex flex-col items-center gap-4">
               {fopyState === "celebrating" ? (
-                <>
-                  <div className="w-20 h-20 rounded-full bg-green-500 flex items-center justify-center animate-in zoom-in duration-300">
-                    <Check className="w-10 h-10 text-white animate-in zoom-in duration-300" />
-                  </div>
-                  {lastRecordingBlob && (
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={handleDownload}
-                      className="flex items-center gap-2"
-                    >
-                      <Download className="w-4 h-4" />
-                      Descargar Audio
-                    </Button>
-                  )}
-                </>
-              ) : fopyState !== "thinking" && (
+                <div className="w-20 h-20 rounded-full bg-green-500 flex items-center justify-center animate-in zoom-in duration-300">
+                  <Check className="w-10 h-10 text-white animate-in zoom-in duration-300" />
+                </div>
+              ) : fopyState === "thinking" ? (
+                <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center">
+                  <Loader2 className="w-10 h-10 text-primary animate-spin" />
+                </div>
+              ) : (
                 <Button
                   onClick={isRecording ? handleStopRecording : handleStartRecording}
                   className={cn(
@@ -119,18 +117,6 @@ export function FopyAudioModal({ isOpen, onClose, onAudioCaptured }: FopyAudioMo
                   )} />
                 </Button>
               )}
-
-              {lastRecordingBlob && fopyState === "idle" && (
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={handleDownload}
-                  className="flex items-center gap-2"
-                >
-                  <Download className="w-4 h-4" />
-                  Descargar última grabación
-                </Button>
-              )}
             </div>
           </div>
 
@@ -141,4 +127,4 @@ export function FopyAudioModal({ isOpen, onClose, onAudioCaptured }: FopyAudioMo
       </DialogContent>
     </Dialog>
   );
-} 
+}
