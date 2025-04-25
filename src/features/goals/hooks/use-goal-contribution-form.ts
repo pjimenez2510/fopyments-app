@@ -13,7 +13,7 @@ const goalContributionSchema = z.object({
     .refine((val) => val > 0, {
       message: "La cantidad debe ser mayor a 0",
     }),
-  payment_method_id: z.string().optional(),
+  payment_method_id: z.coerce.string().optional(),
   description: z.string().optional(),
 });
 

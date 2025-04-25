@@ -79,9 +79,6 @@ export const useDownloadReport = () => {
         case "EXCEL":
           fileExtension = ".xlsx";
           break;
-        case "CSV":
-          fileExtension = ".csv";
-          break;
         default:
           fileExtension = ".json";
       }

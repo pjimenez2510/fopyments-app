@@ -1,6 +1,11 @@
 import AxiosClient from "@/core/infrastructure/http/axios-client";
 import axios from "axios";
-import { Report, ReportRequest } from "../interfaces/reports.interface";
+import {
+  Report,
+  ReportRequest,
+  ReportType,
+  ReportFormat,
+} from "../interfaces/reports.interface";
 
 interface IReportService {
   generateReport(reportRequest: ReportRequest): Promise<Report>;
@@ -34,8 +39,34 @@ export class ReportService implements IReportService {
   }
 
   async getReport(id: string): Promise<Report> {
-    const { data } = await this.axiosClient.get<Report>(`${this.url}/${id}`);
-    return data.data;
+    try {
+      // Primero intentamos obtener los metadatos del reporte
+      const { data } = await this.axiosClient.get<Report>(`${this.url}/${id}`);
+      return data.data;
+    } catch (error) {
+      // Si el error es porque la respuesta es un archivo binario, redirigimos a la descarga
+      if (axios.isAxiosError(error) && error.response) {
+        const contentType = error.response.headers["content-type"];
+        if (
+          contentType &&
+          (contentType.includes("application/pdf") ||
+            contentType.includes("application/vnd.openxmlformats"))
+        ) {
+          // Es un archivo binario, devolvemos un objeto que indique que necesita descarga
+          return {
+            id,
+            type: ReportType.GOALS_BY_CATEGORY, // Usamos un tipo por defecto
+            format: contentType.includes("application/pdf")
+              ? ReportFormat.PDF
+              : ReportFormat.EXCEL,
+            createdAt: new Date().toISOString(),
+            expiresAt: new Date().toISOString(),
+            needsDownload: true,
+          };
+        }
+      }
+      throw error;
+    }
   }
 
   async deleteReport(id: string): Promise<void> {

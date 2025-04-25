@@ -2,20 +2,28 @@
 
 import { useCallback } from "react";
 import { useNotifications } from "@/core/providers/notifications.provider";
-import { INotification } from "../interfaces/notification.interface";
 
 export function useNotificationOperations() {
-  const { notifications, markAsRead: markAsReadContext, markAllAsRead: markAllAsReadContext, loading, refreshNotifications } = useNotifications();
+  const {
+    notifications,
+    markAsRead: markAsReadContext,
+    markAllAsRead: markAllAsReadContext,
+    loading,
+    refreshNotifications,
+  } = useNotifications();
 
   // Obtener notificaciones no leídas
   const getUnreadNotifications = useCallback(() => {
-    return notifications.filter(notification => !notification.read);
+    return notifications.filter((notification) => !notification.read);
   }, [notifications]);
 
   // Marcar notificación como leída
-  const markAsRead = useCallback(async (id: number) => {
-    await markAsReadContext(id);
-  }, [markAsReadContext]);
+  const markAsRead = useCallback(
+    async (id: number) => {
+      await markAsReadContext(id);
+    },
+    [markAsReadContext]
+  );
 
   // Marcar todas las notificaciones como leídas
   const markAllAsRead = useCallback(async () => {
@@ -34,6 +42,6 @@ export function useNotificationOperations() {
     loading,
     markAsRead,
     markAllAsRead,
-    refresh
+    refresh,
   };
 }

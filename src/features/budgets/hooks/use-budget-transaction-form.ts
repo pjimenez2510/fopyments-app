@@ -16,7 +16,7 @@ const budgetTransactionFormSchema = z.object({
       message: "El monto de la transacción debe ser mayor que 0",
     }),
   type: z.nativeEnum(TransactionType),
-  payment_method_id: z.string().optional(),
+  payment_method_id: z.coerce.string().optional(),
   description: z.string().optional(),
   category_id: z.string().optional(),
 });
