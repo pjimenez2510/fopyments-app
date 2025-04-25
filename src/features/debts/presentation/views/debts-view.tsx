@@ -5,9 +5,11 @@ import { useFindDebtUserById } from "../../hooks/use-debts-queries";
 import DebtCard from "../components/debt-card";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { Plus } from "lucide-react";
+import { Plus, PlusCircle } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { EmptyState } from "@/components/empty-state";
+import Link from "next/link";
 
 export default function DebtsView() {
   const router = useRouter();
@@ -38,14 +40,18 @@ export default function DebtsView() {
             <LoadingSpinner />
           </div>
         ) : debts.length === 0 ? (
-          <div className="bg-primary/5 rounded-lg p-8 text-center shadow-sm">
-            <p className="text-gray-500">
-              No tienes deudas registradas todavía
-            </p>
-            <Button onClick={handleCreateDebt} variant="link" className="mt-2">
-              Registra tu primera deuda
-            </Button>
-          </div>
+          <EmptyState
+            title="No tienes deudas"
+            description="Crea tu primer deuda para empezar a registrar tus transacciones."
+            action={
+              <Link href="/management/debts/create" passHref>
+                <Button>
+                  <PlusCircle className="h-4 w-4 mr-2" />
+                  Crear Deuda
+                </Button>
+              </Link>
+            }
+          />
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-4">
             {debts.map((debt) => (

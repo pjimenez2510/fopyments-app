@@ -15,6 +15,9 @@ import { Badge } from "@/components/ui/badge";
 import { formatCurrency } from "@/lib/format-currency";
 import { formatDate } from "@/lib/format-date";
 import { TransactionType } from "../../interfaces/transactions.interface";
+import { PlusCircle } from "lucide-react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 interface TransactionsListProps {
   transactions: Transaction[];
@@ -26,6 +29,14 @@ export function TransactionsList({ transactions }: TransactionsListProps) {
       <EmptyState
         title="No hay transacciones"
         description="Crea tu primera transacción para comenzar a registrar tus movimientos financieros"
+        action={
+          <Link href="/management/transactions/create" passHref>
+            <Button>
+              <PlusCircle className="h-4 w-4 mr-2" />
+              Crear Transacción
+            </Button>
+          </Link>
+        }
       />
     );
   }
