@@ -8,7 +8,6 @@ import { useRouter } from "next/navigation";
 
 const goalSchema = z
   .object({
-    shared_user_id: z.coerce.number().optional(),
     name: z.string().min(1, "El nombre es requerido"),
     current_amount: z.coerce
       .number({
@@ -52,7 +51,6 @@ export const useGoalForm = ({ goal }: UseGoalFormProps) => {
   const form = useForm<GoalForm>({
     resolver: zodResolver(goalSchema),
     defaultValues: {
-      shared_user_id: goal?.shared_user_id || undefined,
       name: goal?.name || "",
       current_amount: goal?.current_amount || 0,
       target_amount: goal?.target_amount || 0,

@@ -48,12 +48,6 @@ const BudgetForm = ({ budget }: BudgetFormProps) => {
 
         <RHFDatePicker name="month" label="Mes" minDate={new Date()} />
 
-        <RHFInput
-          name="shared_user_id"
-          label="Usuario Compartido (opcional)"
-          type="number"
-        />
-
         <div className="flex space-x-2 mt-6">
           <Button onClick={onCancel} type="button">
             Cancelar

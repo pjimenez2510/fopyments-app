@@ -54,7 +54,6 @@ const GoalForm = ({ goal }: GoalFormProps) => {
           label="Fecha de Fin"
           minDate={new Date(new Date().setDate(new Date().getDate() + 1))}
         />
-        <RHFInput name="shared_user_id" label="Usuario Compartido" />
 
         <div className="flex space-x-2">
           <Button onClick={onCancel} type="button" variant={"secondary"}>

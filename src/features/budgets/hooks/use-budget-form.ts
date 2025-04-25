@@ -10,7 +10,6 @@ import { useRouter } from "next/navigation";
 
 const budgetSchema = z
   .object({
-    shared_user_id: z.coerce.number().optional(),
     category_id: z.coerce
       .number({
         invalid_type_error: "La categoría debe ser un número",
@@ -55,7 +54,6 @@ export const useBudgetForm = ({ budget }: UseBudgetFormProps) => {
   const updateBudget = useUpdateBudget();
 
   const defaultValues: Partial<BudgetForm> = {
-    shared_user_id: budget?.shared_user_id || undefined,
     category_id: budget?.category?.id || undefined,
     current_amount: budget?.current_amount || 0,
     limit_amount: budget?.limit_amount || undefined,

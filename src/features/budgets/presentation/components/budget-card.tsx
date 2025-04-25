@@ -93,12 +93,6 @@ const BudgetCard = ({ budget }: BudgetCardProps) => {
           {progress.toFixed(0)}% utilizado
           {isOverBudget && " (Excedido)"}
         </div>
-
-        {budget.shared_user_id && (
-          <div className="text-sm text-blue-500 mt-2">
-            Presupuesto compartido con otro usuario
-          </div>
-        )}
       </CardContent>
       <CardFooter className="flex flex-wrap justify-end gap-2 pt-0">
         <Button
