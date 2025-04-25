@@ -4,6 +4,8 @@ import {
   BudgetUpdate,
 } from "../interfaces/budgets.interface";
 import AxiosClient from "@/core/infrastructure/http/axios-client";
+import { Transaction } from "@/features/transactions/interfaces/transaction.interface";
+import { BudgetTransaction } from "../interfaces/budget-transaction.interface";
 
 interface IBudgetService {
   getBudgets(): Promise<Budget[]>;
@@ -19,6 +21,12 @@ interface IBudgetService {
     userId: number,
     amount: number
   ): Promise<Budget>;
+  createBudgetTransaction(
+    budgetId: number,
+    userId: number,
+    transaction: BudgetTransaction
+  ): Promise<Budget>;
+  getBudgetTransactions(budgetId: number): Promise<Transaction[]>;
 }
 
 export class BudgetService implements IBudgetService {
@@ -96,6 +104,25 @@ export class BudgetService implements IBudgetService {
     const { data } = await this.axiosClient.post<Budget>(
       `${this.url}/${budgetId}/users/${userId}/amount`,
       { amount }
+    );
+    return data.data;
+  }
+
+  async createBudgetTransaction(
+    budgetId: number,
+    userId: number,
+    transaction: BudgetTransaction
+  ): Promise<Budget> {
+    const { data } = await this.axiosClient.post<Budget>(
+      `${this.url}/${budgetId}/users/${userId}/transactions`,
+      transaction
+    );
+    return data.data;
+  }
+
+  async getBudgetTransactions(budgetId: number): Promise<Transaction[]> {
+    const { data } = await this.axiosClient.get<Transaction[]>(
+      `${this.url}/${budgetId}/transactions`
     );
     return data.data;
   }
