@@ -1,4 +1,10 @@
-import { CreditCard, LucideIcon, Target } from "lucide-react";
+import {
+  ArrowLeftRight,
+  Banknote,
+  CreditCard,
+  LucideIcon,
+  Target,
+} from "lucide-react";
 
 type Submenu = {
   href: string;
@@ -42,7 +48,7 @@ export const getAllMenuList = (pathname: string) => {
           href: "/management/debts",
           label: "Deudas",
           active: pathname.startsWith("/management/debts"),
-          icon: CreditCard,
+          icon: Banknote,
           submenus: [],
         },
         {
@@ -50,6 +56,13 @@ export const getAllMenuList = (pathname: string) => {
           label: "Métodos de Pago",
           active: pathname.startsWith("/management/payment-methods"),
           icon: CreditCard,
+          submenus: [],
+        },
+        {
+          href: "/management/transactions",
+          label: "Transacciones",
+          active: pathname.startsWith("/management/transactions"),
+          icon: ArrowLeftRight,
           submenus: [],
         },
       ],

@@ -17,7 +17,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <Image
               priority
               src="/images/logo.png"
-              alt="Fopyments logo"
+              alt="FopyWay logo"
               width={170}
               height={170}
             />

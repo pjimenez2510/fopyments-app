@@ -39,7 +39,7 @@ export function SheetMenu() {
               <Image
                 src="/images/logo.png"
                 priority
-                alt="Fopyments"
+                alt="FopyWay"
                 width={40}
                 height={40}
               />

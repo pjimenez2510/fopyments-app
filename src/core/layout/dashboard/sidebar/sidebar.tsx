@@ -36,7 +36,7 @@ export function Sidebar() {
             <Image
               src="/images/logo.png"
               priority
-              alt="Fopyments"
+              alt="FopyWay"
               width={40}
               height={40}
             />
@@ -48,7 +48,7 @@ export function Sidebar() {
                   : "translate-x-0 opacity-100"
               )}
             >
-              Fopyments
+              FopyWay
             </h1>
           </Link>
         </Button>
