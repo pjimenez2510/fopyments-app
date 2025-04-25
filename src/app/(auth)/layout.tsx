@@ -1,3 +1,4 @@
+import { auth } from "@/auth.config";
 import {
   Card,
   CardContent,
@@ -7,8 +8,17 @@ import {
 } from "@/components/ui/card";
 import Image from "next/image";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default async function Layout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const session = await auth();
+  if (session) {
+    redirect("/management");
+  }
   return (
     <div className="flex min-h-screen flex-col items-center justify-center  p-8">
       <Card className="w-full md:max-w-md">
