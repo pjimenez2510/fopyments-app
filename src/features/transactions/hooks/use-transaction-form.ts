@@ -11,6 +11,13 @@ import {
 } from "./use-transactions-queries";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useFormData } from "@/hooks/use-form-data";
+import { useEffect, useRef } from "react";
+import { useCategories } from "@/features/categories/hooks/use-categories-queries";
+
+const normalizeString = (str: string) => {
+  return str?.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase() || "";
+};
 
 const transactionSchema = z.object({
   amount: z.coerce
@@ -45,6 +52,9 @@ export const useTransactionForm = ({
   const { data } = useSession();
   const userId = data?.user?.id;
   const router = useRouter();
+  const formData = useFormData();
+  const { data: categories, isLoading: isLoadingCategories } = useCategories();
+  const initialDataProcessedRef = useRef(false);
 
   const form = useForm<TransactionForm>({
     resolver: zodResolver(transactionSchema),
@@ -57,6 +67,50 @@ export const useTransactionForm = ({
       date: transaction?.date ? new Date(transaction.date) : new Date(),
     },
   });
+
+  useEffect(() => {
+    console.log('Initial form values:', form.getValues());
+  }, []);
+
+  useEffect(() => {
+    if (!formData || initialDataProcessedRef.current) {
+      return;
+    }
+
+    if (formData.amount) {
+      form.setValue('amount', formData.amount, { shouldValidate: true });
+    }
+
+    if (formData.type) {
+      const transactionType = formData.type.toUpperCase() as keyof typeof TransactionType;
+      if (TransactionType[transactionType]) {
+        form.setValue('type', TransactionType[transactionType], { shouldValidate: true });
+      }
+    }
+
+    if (formData.category && categories?.length) {
+      const categoryToFind = normalizeString(formData.category);
+      const foundCategory = categories.find(category => 
+        normalizeString(category.name) === categoryToFind
+      );
+      
+      if (foundCategory) {
+        form.setValue('category_id', foundCategory.id, { shouldValidate: true });
+      }
+    }
+
+    if (formData.description) {
+      form.setValue('description', formData.description, { shouldValidate: true });
+    }
+
+    if (formData.payment_method_id) {
+      form.setValue('payment_method_id', formData.payment_method_id, { shouldValidate: true });
+    }
+
+    form.setValue('date', new Date(), { shouldValidate: true });
+    
+    initialDataProcessedRef.current = true;
+  }, [formData, categories, form]);
 
   const onSubmit: SubmitHandler<TransactionForm> = async (data) => {
     const transactionData = {
@@ -87,5 +141,8 @@ export const useTransactionForm = ({
     onSubmit,
     onCancel,
     isSubmitting: form.formState.isSubmitting,
+    categories,
+    isLoadingCategories,
+    watch: form.watch,
   };
 };

@@ -12,7 +12,6 @@ import {
 } from "../../interfaces/transactions.interface";
 import { useTransactionForm } from "../../hooks/use-transaction-form";
 import RHFDatePicker from "@/components/rhf/date-picker/RHFDatePicker";
-import { useCategories } from "@/features/categories/hooks/use-categories-queries";
 import { useFindAllPaymentMethods } from "@/features/payment-methods/hooks/use-payment-methods-queries";
 
 interface TransactionFormProps {
@@ -20,10 +19,9 @@ interface TransactionFormProps {
 }
 
 export default function TransactionForm({ transaction }: TransactionFormProps) {
-  const { form, onSubmit, onCancel, isSubmitting } = useTransactionForm({
+  const { form, onSubmit, onCancel, isSubmitting, categories, isLoadingCategories } = useTransactionForm({
     transaction,
   });
-  const { data: categories, isLoading: isLoadingCategories } = useCategories();
   const { data: paymentMethods, isLoading: isLoadingPaymentMethods } =
     useFindAllPaymentMethods();
 
