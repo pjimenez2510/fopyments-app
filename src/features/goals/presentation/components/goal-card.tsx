@@ -70,12 +70,6 @@ const GoalCard = ({ goal }: GoalCardProps) => {
         <div className="text-right text-sm">
           {progress.toFixed(0)}% completado
         </div>
-
-        {goal.shared_user_id && (
-          <div className="text-sm text-blue-500 mt-2">
-            Meta compartida con otro usuario
-          </div>
-        )}
       </CardContent>
       <CardFooter className="flex flex-wrap justify-end gap-2 pt-0">
         <Button
