@@ -1,3 +1,4 @@
+import { Transaction } from "@/features/transactions/interfaces/transaction.interface";
 import {
   Debt,
   DebtCreate,
@@ -14,4 +15,5 @@ export interface IDebtService {
   getUserDebts(userId: number): Promise<Debt[]>;
   getUserCredits(creditorId: number): Promise<Debt[]>;
   payDebt(debtId: number, userId: number, payment: DebtPayment): Promise<Debt>;
+  getDebtTransactions(debtId: number): Promise<Transaction[]>;
 }

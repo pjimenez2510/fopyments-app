@@ -10,11 +10,10 @@ import {
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { formatCurrency } from "@/lib/format-currency";
-import { Edit, Plus, Trash } from "lucide-react";
+import { DollarSign, Edit, Eye, Plus, Trash } from "lucide-react";
 import { Budget } from "../../interfaces/budgets.interface";
 import { useRouter } from "next/navigation";
 import { useDeleteBudget } from "../../hooks/use-budgets-queries";
-import { formatDate } from "date-fns";
 
 interface BudgetCardProps {
   budget: Budget;
@@ -44,6 +43,14 @@ const BudgetCard = ({ budget }: BudgetCardProps) => {
     router.push(`/management/budgets/amount/${budget.id}`);
   };
 
+  const handleViewTransactions = () => {
+    router.push(`/management/budgets/transactions/${budget.id}`);
+  };
+
+  const handleAddTransaction = () => {
+    router.push(`/management/budgets/transaction/${budget.id}`);
+  };
+
   return (
     <Card
       className={`w-full shadow-md hover:shadow-lg transition-shadow ${
@@ -52,9 +59,13 @@ const BudgetCard = ({ budget }: BudgetCardProps) => {
     >
       <CardHeader className={isOverBudget ? "bg-destructive/10" : ""}>
         <CardTitle className="flex justify-between items-center">
-          <span>{budget.category.name}</span>
+          <span>{budget.category?.name}</span>
           <span className="text-sm font-normal">
-            {formatDate(budget.month, "MMMM yyyy")}
+            {budget.month &&
+              new Date(budget.month).toLocaleDateString("es-ES", {
+                month: "long",
+                year: "numeric",
+              })}
           </span>
         </CardTitle>
       </CardHeader>
@@ -89,7 +100,25 @@ const BudgetCard = ({ budget }: BudgetCardProps) => {
           </div>
         )}
       </CardContent>
-      <CardFooter className="flex justify-end gap-2 pt-0">
+      <CardFooter className="flex flex-wrap justify-end gap-2 pt-0">
+        <Button
+          size="sm"
+          variant="ghost"
+          className="flex items-center gap-1"
+          onClick={handleViewTransactions}
+        >
+          <Eye className="h-4 w-4" />
+          <span>Ver Transacciones</span>
+        </Button>
+        <Button
+          size="sm"
+          variant="ghost"
+          className="flex items-center gap-1"
+          onClick={handleAddTransaction}
+        >
+          <DollarSign className="h-4 w-4" />
+          <span>Añadir Transacción</span>
+        </Button>
         <Button
           size="sm"
           variant="ghost"

@@ -90,3 +90,11 @@ export const usePayDebt = () => {
     },
   });
 };
+
+export const useFindDebtTransactions = (debtId: string) => {
+  return useQuery({
+    queryKey: DEBTS_KEYS.DEBT_TRANSACTIONS(debtId),
+    queryFn: () => debtService.getDebtTransactions(Number(debtId)),
+    enabled: !!debtId,
+  });
+};

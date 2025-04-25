@@ -86,3 +86,56 @@ export const useUpdateGoalProgress = () => {
     },
   });
 };
+
+export const useCreateGoalContribution = () => {
+  return useMutation({
+    mutationFn: ({
+      goalId,
+      userId,
+      amount,
+      paymentMethodId,
+      description,
+    }: {
+      goalId: number;
+      userId: number;
+      amount: number;
+      paymentMethodId?: number;
+      description?: string;
+    }) =>
+      goalService.createGoalContribution(
+        goalId,
+        userId,
+        amount,
+        paymentMethodId,
+        description
+      ),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: GOALS_KEYS.GOALS });
+    },
+  });
+};
+
+export const useFindGoalContributions = (goalId: string) => {
+  return useQuery({
+    queryKey: GOALS_KEYS.GOAL_CONTRIBUTIONS(goalId),
+    queryFn: () => goalService.getGoalContributions(Number(goalId)),
+    enabled: !!goalId,
+  });
+};
+
+export const useDeleteGoalContribution = () => {
+  return useMutation({
+    mutationFn: (id: number) => goalService.deleteGoalContribution(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: GOALS_KEYS.GOALS });
+    },
+  });
+};
+
+export const useFindGoalTransactions = (goalId: string) => {
+  return useQuery({
+    queryKey: GOALS_KEYS.GOAL_TRANSACTIONS(goalId),
+    queryFn: () => goalService.getGoalTransactions(Number(goalId)),
+    enabled: !!goalId,
+  });
+};

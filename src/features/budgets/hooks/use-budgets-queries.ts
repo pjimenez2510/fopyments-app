@@ -5,6 +5,7 @@ import { BudgetCreate, BudgetUpdate } from "../interfaces/budgets.interface";
 import queryClient from "@/core/infrastructure/react-query/query-client";
 import { useRouter } from "next/navigation";
 import { formatDate } from "@/lib/format-date";
+import { BudgetTransaction } from "../interfaces/budget-transaction.interface";
 
 const budgetService = BudgetService.getInstance();
 
@@ -93,6 +94,34 @@ export const useUpdateBudgetAmount = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: BUDGETS_KEYS.BUDGETS });
     },
+  });
+};
+
+export const useCreateBudgetTransaction = () => {
+  return useMutation({
+    mutationFn: ({
+      budgetId,
+      userId,
+      transaction,
+    }: {
+      budgetId: number;
+      userId: number;
+      transaction: BudgetTransaction;
+    }) => budgetService.createBudgetTransaction(budgetId, userId, transaction),
+    onSuccess: (_, { budgetId }) => {
+      queryClient.invalidateQueries({ queryKey: BUDGETS_KEYS.BUDGETS });
+      queryClient.invalidateQueries({
+        queryKey: BUDGETS_KEYS.BUDGET_TRANSACTIONS(budgetId.toString()),
+      });
+    },
+  });
+};
+
+export const useFindBudgetTransactions = (budgetId: string) => {
+  return useQuery({
+    queryKey: BUDGETS_KEYS.BUDGET_TRANSACTIONS(budgetId),
+    queryFn: () => budgetService.getBudgetTransactions(Number(budgetId)),
+    enabled: !!budgetId,
   });
 };
 

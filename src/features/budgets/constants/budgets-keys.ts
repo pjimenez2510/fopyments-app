@@ -10,4 +10,5 @@ export const BUDGETS_KEYS = {
     "month",
     month,
   ],
+  BUDGET_TRANSACTIONS: (id: string) => [BASE_KEY, id, "transactions"],
 };
