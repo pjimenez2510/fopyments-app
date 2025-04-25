@@ -1,7 +1,7 @@
 import { Category } from "@/features/categories/interfaces/categories.interface";
 
 export interface GoalBase {
-  shared_user_id?: number | null;
+  shared_user_id?: number;
   name: string;
   target_amount: number;
   current_amount: number;

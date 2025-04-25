@@ -12,17 +12,17 @@ const Footer = () => {
             <Link href="/" className="flex items-center font-bold gap-4">
               <Image
                 src="/images/logo.png"
-                alt="Fopyments logo"
+                alt="FopyWay logo"
                 className="rounded-full"
                 width={170}
                 priority
                 height={170}
               />
               <div>
-                <h3 className="text-2xl">Fopyments</h3>
+                <h3 className="text-2xl">FopyWay</h3>
                 <p>
-                  Gestiona tus rentas de automóvil con Fopyments de forma rápida
-                  y segura.
+                  Gestiona tus rentas de automóvil con FopyWay de forma rápida y
+                  segura.
                 </p>
               </div>
             </Link>
@@ -32,7 +32,7 @@ const Footer = () => {
             <h3 className="font-bold text-lg">Contacto</h3>
             <div>
               <Link
-                href="mailto:contact@Fopyments.com"
+                href="mailto:contact@FopyWay.com"
                 className="opacity-60 hover:opacity-100"
               >
                 Email
@@ -99,7 +99,7 @@ const Footer = () => {
             <h3 className="font-bold text-lg">Redes Sociales</h3>
             <div>
               <Link
-                href="https://facebook.com/Fopyments"
+                href="https://facebook.com/FopyWay"
                 target="_blank"
                 className="opacity-60 hover:opacity-100"
               >
@@ -108,7 +108,7 @@ const Footer = () => {
             </div>
             <div>
               <Link
-                href="https://twitter.com/Fopyments"
+                href="https://twitter.com/FopyWay"
                 target="_blank"
                 className="opacity-60 hover:opacity-100"
               >
@@ -117,7 +117,7 @@ const Footer = () => {
             </div>
             <div>
               <Link
-                href="https://instagram.com/Fopyments"
+                href="https://instagram.com/FopyWay"
                 target="_blank"
                 className="opacity-60 hover:opacity-100"
               >
@@ -129,7 +129,7 @@ const Footer = () => {
 
         <section className="text-center mt-6">
           <h3 className="text-sm">
-            &copy; 2024 Fopyments. Diseñado y desarrollado por Fopyments S.A
+            &copy; 2024 FopyWay. Diseñado y desarrollado por FopyWay S.A
           </h3>
         </section>
       </div>

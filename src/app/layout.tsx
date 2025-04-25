@@ -15,7 +15,7 @@ const fontSans = FontSans({
 });
 
 export const metadata: Metadata = {
-  title: "Fopyments",
+  title: "FopyWay",
   description: "Gestiona tus rentas de automóvil",
 };
 
