@@ -9,17 +9,16 @@ import { Button } from "@/components/ui/button";
 import { Debt } from "../../interfaces/debts.interface";
 import { formatCurrency } from "@/lib/format-currency";
 import RHFSelect from "@/components/rhf/RHFSelect";
-import { Textarea } from "@/components/ui/textarea";
 import { useFindAllPaymentMethods } from "@/features/payment-methods/hooks/use-payment-methods-queries";
-import { Label } from "@/components/ui/label";
+import { useRouter } from "next/navigation";
 
 interface DebtPaymentFormProps {
   debt: Debt;
 }
 
 export default function DebtPaymentForm({ debt }: DebtPaymentFormProps) {
-  const { methods, onSubmit, isLoading, isError, error } =
-    useDebtPaymentForm(debt);
+  const router = useRouter();
+  const { methods, onSubmit, isLoading } = useDebtPaymentForm(debt);
   const { data: paymentMethods = [] } = useFindAllPaymentMethods();
 
   const paymentMethodOptions = paymentMethods.map((method) => ({
@@ -29,13 +28,20 @@ export default function DebtPaymentForm({ debt }: DebtPaymentFormProps) {
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={onSubmit} className="space-y-4">
-        <div className="bg-gray-50 p-4 rounded-lg space-y-2 mb-4">
+      <form
+        onSubmit={onSubmit}
+        className="flex flex-col items-center w-full max-w-xl mx-auto"
+      >
+        <div className="bg-gray-50 p-4 rounded-lg space-y-2 mb-4 w-full">
           <h3 className="font-semibold text-lg">{debt.description}</h3>
           <div className="grid grid-cols-2 text-sm">
             <span className="text-gray-500">Monto original:</span>
             <span className="font-medium">
               {formatCurrency(debt.original_amount)}
+            </span>
+            <span className="text-gray-500">Monto pagado:</span>
+            <span className="font-medium text-green-600">
+              {formatCurrency(debt.original_amount - debt.pending_amount)}
             </span>
             <span className="text-gray-500">Monto pendiente:</span>
             <span className="font-medium text-red-600">
@@ -58,22 +64,20 @@ export default function DebtPaymentForm({ debt }: DebtPaymentFormProps) {
           options={paymentMethodOptions}
         />
 
-        <div className="space-y-2">
-          <Label htmlFor="description">Descripción (opcional)</Label>
-          <Textarea
-            id="description"
-            placeholder="Añade una descripción para este pago..."
-            {...methods.register("description")}
-          />
-        </div>
+        <RHFInput
+          name="description"
+          label="Descripción (opcional)"
+          placeholder="Añade una descripción para este pago..."
+        />
 
-        {isError && (
-          <div className="p-3 bg-red-50 text-red-500 rounded-md text-sm">
-            {error?.message || "Ocurrió un error al procesar el pago"}
-          </div>
-        )}
-
-        <div className="flex justify-end">
+        <div className="flex items-center gap-2">
+          <Button
+            variant="secondary"
+            onClick={() => router.back()}
+            className="flex items-center gap-2"
+          >
+            Cerrar
+          </Button>
           <Button
             type="submit"
             disabled={isLoading || debt.pending_amount <= 0}

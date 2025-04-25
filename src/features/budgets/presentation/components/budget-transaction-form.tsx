@@ -9,13 +9,12 @@ import { Button } from "@/components/ui/button";
 import { Budget } from "../../interfaces/budgets.interface";
 import { formatCurrency } from "@/lib/format-currency";
 import RHFSelect from "@/components/rhf/RHFSelect";
-import { Textarea } from "@/components/ui/textarea";
 import { useFindAllPaymentMethods } from "@/features/payment-methods/hooks/use-payment-methods-queries";
 import { useCategories } from "@/features/categories/hooks/use-categories-queries";
-import { Label } from "@/components/ui/label";
 import { TRANSACTION_TYPES } from "@/features/transactions/interfaces/transactions.interface";
 import { Badge } from "@/components/ui/badge";
 import { Category } from "@/features/categories/interfaces/categories.interface";
+import { useRouter } from "next/navigation";
 
 interface BudgetTransactionFormProps {
   budget: Budget;
@@ -24,10 +23,10 @@ interface BudgetTransactionFormProps {
 export default function BudgetTransactionForm({
   budget,
 }: BudgetTransactionFormProps) {
-  const { methods, onSubmit, isLoading, isError, error } =
-    useBudgetTransactionForm(budget);
+  const { methods, onSubmit, isLoading } = useBudgetTransactionForm(budget);
   const { data: paymentMethods = [] } = useFindAllPaymentMethods();
   const { data: categories = [] } = useCategories();
+  const router = useRouter();
 
   const paymentMethodOptions = paymentMethods.map((method) => ({
     value: method.id.toString(),
@@ -41,8 +40,11 @@ export default function BudgetTransactionForm({
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={onSubmit} className="space-y-4">
-        <div className="bg-gray-50 p-4 rounded-lg space-y-2 mb-4">
+      <form
+        onSubmit={onSubmit}
+        className="flex flex-col items-center w-full max-w-xl mx-auto"
+      >
+        <div className="bg-gray-50 p-4 rounded-lg space-y-2 mb-4 w-full">
           <div className="flex justify-between items-start">
             <h3 className="font-semibold text-lg">{budget.category?.name}</h3>
             <Badge variant="secondary">
@@ -96,22 +98,21 @@ export default function BudgetTransactionForm({
           options={categoryOptions}
         />
 
-        <div className="space-y-2">
-          <Label htmlFor="description">Descripción (opcional)</Label>
-          <Textarea
-            id="description"
-            placeholder="Añade una descripción para esta transacción..."
-            {...methods.register("description")}
-          />
-        </div>
+        <RHFInput
+          name="description"
+          label="Descripción"
+          placeholder="Descripción de la transacción"
+        />
 
-        {isError && (
-          <div className="p-3 bg-red-50 text-red-500 rounded-md text-sm">
-            {error?.message || "Ocurrió un error al procesar la transacción"}
-          </div>
-        )}
+        <div className="flex items-center gap-2">
+          <Button
+            variant="secondary"
+            onClick={() => router.back()}
+            className="flex items-center gap-2"
+          >
+            Cerrar
+          </Button>
 
-        <div className="flex justify-end">
           <Button
             type="submit"
             disabled={isLoading}
