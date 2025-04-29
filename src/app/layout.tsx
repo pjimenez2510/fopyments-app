@@ -8,6 +8,7 @@ import { Toaster } from "@/components/ui/sonner";
 import queryClient from "@/core/infrastructure/react-query/query-client";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { NotificationProvider } from "@/core/providers/notifications.provider";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -15,7 +16,7 @@ const fontSans = FontSans({
 });
 
 export const metadata: Metadata = {
-  title: "Fopyments",
+  title: "FopyWay",
   description: "Gestiona tus rentas de automóvil",
 };
 
@@ -34,9 +35,13 @@ export default function RootLayout({
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <QueryClientProvider client={queryClient}>
-            <ReactQueryDevtools initialIsOpen={false} />
+            <ReactQueryDevtools initialIsOpen={false} buttonPosition="top-left" />
             <Toaster position="top-right" closeButton richColors />
-            <AuthProvider>{children}</AuthProvider>
+            <AuthProvider>
+              <NotificationProvider>
+                {children}
+              </NotificationProvider>
+            </AuthProvider>
           </QueryClientProvider>
         </ThemeProvider>
       </body>

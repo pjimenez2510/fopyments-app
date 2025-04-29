@@ -1,4 +1,12 @@
-import { CreditCard, LucideIcon, Target } from "lucide-react";
+import {
+  ArrowLeftRight,
+  BanknoteArrowDown,
+  CreditCard,
+  HandCoins,
+  LayoutDashboard,
+  LucideIcon,
+  Target,
+} from "lucide-react";
 
 type Submenu = {
   href: string;
@@ -25,6 +33,14 @@ export const getAllMenuList = (pathname: string) => {
       groupLabel: "Módulos",
       menus: [
         {
+          href: "/management",
+          label: "Dashboard",
+          active: pathname === "/management",
+          icon: LayoutDashboard,
+          submenus: [],
+        },
+
+        {
           href: "/management/goals",
           label: "Metas",
           active: pathname.startsWith("/management/goals"),
@@ -35,7 +51,28 @@ export const getAllMenuList = (pathname: string) => {
           href: "/management/budgets",
           label: "Presupuestos",
           active: pathname.startsWith("/management/budgets"),
+          icon: HandCoins,
+          submenus: [],
+        },
+        {
+          href: "/management/debts",
+          label: "Deudas",
+          active: pathname.startsWith("/management/debts"),
+          icon: BanknoteArrowDown,
+          submenus: [],
+        },
+        {
+          href: "/management/payment-methods",
+          label: "Métodos de Pago",
+          active: pathname.startsWith("/management/payment-methods"),
           icon: CreditCard,
+          submenus: [],
+        },
+        {
+          href: "/management/transactions",
+          label: "Transacciones",
+          active: pathname.startsWith("/management/transactions"),
+          icon: ArrowLeftRight,
           submenus: [],
         },
       ],

@@ -1,5 +1,7 @@
 import { Goal, GoalCreate, GoalUpdate } from "../interfaces/ goals.interface";
 import AxiosClient from "@/core/infrastructure/http/axios-client";
+import { GoalContribution } from "../interfaces/goal-contribution.interface";
+import { Transaction } from "@/features/transactions/interfaces/transactions.interface";
 
 interface IGoalService {
   getGoals(): Promise<Goal[]>;
@@ -14,6 +16,16 @@ interface IGoalService {
     userId: number,
     amount: number
   ): Promise<Goal>;
+  createGoalContribution(
+    goalId: number,
+    userId: number,
+    amount: number,
+    paymentMethodId?: number,
+    description?: string
+  ): Promise<GoalContribution>;
+  getGoalContributions(goalId: number): Promise<GoalContribution[]>;
+  deleteGoalContribution(id: number): Promise<{ deleted: boolean }>;
+  getGoalTransactions(goalId: number): Promise<Transaction[]>;
 }
 
 export class GoalService implements IGoalService {
@@ -84,6 +96,47 @@ export class GoalService implements IGoalService {
     const { data } = await this.axiosClient.post<Goal>(
       `${this.url}/${goalId}/users/${userId}/progress`,
       { amount }
+    );
+    return data.data;
+  }
+
+  async createGoalContribution(
+    goalId: number,
+    userId: number,
+    amount: number,
+    paymentMethodId?: number,
+    description?: string
+  ): Promise<GoalContribution> {
+    const { data } = await this.axiosClient.post<GoalContribution>(
+      "goal-contributions",
+      {
+        goal_id: goalId,
+        user_id: userId,
+        amount,
+        payment_method_id: paymentMethodId,
+        description,
+      }
+    );
+    return data.data;
+  }
+
+  async getGoalContributions(goalId: number): Promise<GoalContribution[]> {
+    const { data } = await this.axiosClient.get<GoalContribution[]>(
+      `${this.url}/${goalId}/contributions`
+    );
+    return data.data;
+  }
+
+  async deleteGoalContribution(id: number): Promise<{ deleted: boolean }> {
+    const { data } = await this.axiosClient.delete<{ deleted: boolean }>(
+      `goal-contributions/${id}`
+    );
+    return data.data;
+  }
+
+  async getGoalTransactions(goalId: number): Promise<Transaction[]> {
+    const { data } = await this.axiosClient.get<Transaction[]>(
+      `${this.url}/${goalId}/transactions`
     );
     return data.data;
   }

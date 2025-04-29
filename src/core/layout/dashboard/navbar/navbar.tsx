@@ -1,6 +1,7 @@
 import { SheetMenu } from '../sidebar/sheet-menu'
 import { ModeToggle } from './mode-toggle'
 import { UserNav } from './user-nav'
+import { NotificationDropdown } from '@/features/notifications/components/notification-dropdown'
 
 interface NavbarProps {
   title: string
@@ -15,6 +16,7 @@ export function Navbar({ title }: NavbarProps) {
           <h1 className="font-bold">{title}</h1>
         </div>
         <div className="flex flex-1 items-center justify-end space-x-2">
+          <NotificationDropdown />
           <ModeToggle />
           <UserNav />
         </div>
